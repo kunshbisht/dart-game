@@ -8,9 +8,11 @@ export class Bullet {
     this.dirAngle = dirAngle;
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
+  update() {
     this.dist += this.speed;
+  }
 
+  draw(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
     ctx.arc(
       this.dist * Math.cos(this.dirAngle),

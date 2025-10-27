@@ -8,6 +8,32 @@
   <style>
     body {
       margin: 0;
+      overflow: hidden;
+    }
+
+    #ui {
+      position: absolute;
+      inset: 0;
+      color: white;
+      margin: 20px;
+      font-family: Arial, sans-serif;
+      pointer-events: none;
+    }
+
+    #points {
+      position: absolute;
+      left: 50%;
+      top: 50px;
+      transform: translateX(-50%);
+      font-size: 3rem;
+      font-weight: bold;
+      text-shadow: #0008 0 0 10px;
+    }
+
+    #pauseplay {
+      position: absolute;
+      pointer-events: all;
+      right: 20px;
     }
   </style>
   <title>Game</title>
@@ -15,6 +41,10 @@
 
 <body>
   <canvas id="canvas" width="1000" height="500"></canvas>
+  <div id="ui">
+    <span id="points">Puntos: 0</span>
+    <button id="pauseplay">Pausa</button>
+  </div>
   <script type="module" src="/src/main.ts"></script>
 </body>
 

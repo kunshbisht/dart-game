@@ -1,29 +1,34 @@
 import type { Bullet } from "./Bullet";
-import { removeEnemy } from "./main";
+import { lose, kill } from "./main";
 
 export class Enemy {
   dist: number;
   dirAngle: number;
   speed = 1;
   size = 30;
+  color: string;
 
-  constructor(dirAngle: number, initDistance: number) {
+  constructor(dirAngle: number, initDistance: number, color: string) {
     this.dirAngle = dirAngle;
     this.dist = initDistance;
+    this.color = color;
   }
 
-  draw(ctx: CanvasRenderingContext2D, bullets: Bullet[]) {
+  update(bullets: Bullet[]) {
     this.dist -= this.speed;
 
-    if (bullets.some(b => this.isCollide(b))) removeEnemy(this)
+    if (bullets.some(b => this.isCollide(b))) kill(this, bullets.find(b => this.isCollide(b))!)
+    if (this.dist < this.size) lose();
+  }
 
+  draw(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
     ctx.arc(
       this.dist * Math.cos(this.dirAngle),
       this.dist * Math.sin(this.dirAngle),
       this.size, 0, Math.PI * 2
     );
-    ctx.fillStyle = 'blue';
+    ctx.fillStyle = this.color;
     ctx.fill();
   }
 
