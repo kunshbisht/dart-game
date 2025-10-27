@@ -4,7 +4,7 @@ import { lose, kill } from "./main";
 export class Enemy {
   dist: number;
   dirAngle: number;
-  speed = 1;
+  speed = 100;
   size = 30;
   color: string;
 
@@ -14,11 +14,11 @@ export class Enemy {
     this.color = color;
   }
 
-  update(bullets: Bullet[]) {
-    this.dist -= this.speed;
+  update(bullets: Bullet[], deltaTime: number) {
+    this.dist -= this.speed * deltaTime;
 
     if (bullets.some(b => this.isCollide(b))) kill(this, bullets.find(b => this.isCollide(b))!)
-    if (this.dist < this.size) lose();
+    if (this.dist < this.size * 2) lose();
   }
 
   draw(ctx: CanvasRenderingContext2D) {

@@ -1,15 +1,15 @@
 export class Bullet {
   dist = 0;
   dirAngle: number;
-  speed = 10;
+  speed = 500;
   size = 10;
 
   constructor(dirAngle: number) {
     this.dirAngle = dirAngle;
   }
 
-  update() {
-    this.dist += this.speed;
+  update(deltaTime: number) {
+    this.dist += this.speed * deltaTime;
   }
 
   draw(ctx: CanvasRenderingContext2D) {

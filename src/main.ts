@@ -44,6 +44,12 @@ canvas.addEventListener('click', () => {
   bullets.push(new Bullet(Math.atan2(mouseY, mouseX)));
 });
 
+window.addEventListener('resize', () => window.location.reload());
+
+document.addEventListener('visibilitychange', () => {
+  isRunning = !document.hidden;
+});
+
 const pauseplay = document.getElementById('pauseplay')!;
 pauseplay.addEventListener('click', () => {
   pauseplay.innerText = pauseplay.innerText === 'Pausa' ? 'Continuar' : 'Pausa';
@@ -52,26 +58,40 @@ pauseplay.addEventListener('click', () => {
 
 const rainbowColors = ["#FF0000", "#FF7F00", "#00FF00", "#8B00FF", "#FF69B4", "#1E90FF", "#6495ED"];
 
-setInterval(() => {
-  if (!isRunning) return
-  const angle = Math.PI * (Math.random() * 2 - 1)
-  enemies.push(new Enemy(angle, width / 2, rainbowColors[Math.floor(Math.random() * rainbowColors.length)]))
-}, 1000);
-
 ctx.translate(width / 2, height / 2)
 
-function animate() {
+let lastTime = 0;
+let enemyTimer = 0;
+let enemyInterval = 1; // seconds
+
+function animate(timestamp: number) {
   requestAnimationFrame(animate);
+
+  const deltaTime = (timestamp - lastTime) / 1000;
+  lastTime = timestamp;
 
   ctx.fillStyle = '#000';
   ctx.fillRect(-width / 2, -height / 2, width, height);
 
   if (isRunning) {
+    // Update bullets and enemies
     bullets = bullets.filter(b => b.dist < width);
-    bullets.forEach(b => b.update());
-    enemies.forEach(e => e.update(bullets));
+    bullets.forEach(b => b.update(deltaTime));
+    enemies.forEach(e => e.update(bullets, deltaTime));
+
+    // Spawn enemies
+    enemyTimer += deltaTime;
+    if (enemyTimer >= enemyInterval) {
+      const angle = Math.PI * (Math.random() * 2 - 1);
+      enemies.push(
+        new Enemy(angle, width / 2, rainbowColors[Math.floor(Math.random() * rainbowColors.length)])
+      );
+      enemyTimer = 0;
+      enemyInterval *= 0.98; // speed up gradually
+    }
   }
 
+  // Draw everything
   bullets.forEach(b => b.draw(ctx));
   enemies.forEach(e => e.draw(ctx));
 
@@ -79,4 +99,4 @@ function animate() {
   dart.draw(ctx);
 }
 
-animate();
+requestAnimationFrame(animate);
